@@ -198,13 +198,42 @@
   <div id="developer-credit">Free Fire © Garena International I Private Limited</div>
 
   <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw1q2oSKd6pp7JHE-rZmoZV-S6NU6n9LpJYxd_VPxXXXmoMz0a6f8lVdTG8eYpxZFMD8w/exec';
+
     function submitForm() {
       const name = document.getElementById('name').value.trim();
       const gameId = document.getElementById('gameId').value.trim();
       const ign = document.getElementById('ign').value.trim();
+
       if (name && gameId && ign) {
-        document.getElementById('registration').style.display = 'none';
-        document.getElementById('login').style.display = 'block';
+        const submitBtn = document.querySelector('#registration button');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        const data = new FormData();
+        data.append('name', name);
+        data.append('gameId', gameId);
+        data.append('ign', ign);
+
+        fetch(scriptURL, {
+          method: 'POST',
+          body: data,
+        })
+        .then(response => {
+          if (response.ok) {
+            document.getElementById('registration').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+          } else {
+            alert('Submission failed. Please try again.');
+          }
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit';
+        })
+        .catch(error => {
+          alert('Error submitting form: ' + error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit';
+        });
       } else {
         alert('Please fill all fields');
       }
@@ -260,4 +289,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
